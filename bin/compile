@@ -19,7 +19,7 @@ github_token = if env_dir
 
 if github_token.nil?
   puts "       !!!! GITHUB_AUTH_TOKEN not set"
-  puts "       !!!!   Try `heroku config:add GITHUB_AUTH_TOKEN=<my token>`"
+  puts "       !!!!   Try `cf set-env APP_NAME GITHUB_AUTH_TOKEN token_here`"
   puts "       !!!!   See http://developer.github.com/v3/oauth/#non-web-application-flow"
   exit 1
 end
@@ -42,14 +42,6 @@ end
 if valid_login? github_token
   puts "       Generated .netrc & .curlrc files (available only at build-time)"
 
-  ##
-  # Remove $GITHUB_AUTH_TOKEN from runtime environment at slug boot time.
-  FileUtils.mkdir_p "#{build_dir}/.profile.d"
-  File.open "#{build_dir}/.profile.d/netrc.sh", "w+", 0600 do |f|
-    f.puts "unset GITHUB_AUTH_TOKEN"
-  end
-
-  ##
   # Print out user information
   puts user_block(github_token)
 else
